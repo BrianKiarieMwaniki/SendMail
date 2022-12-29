@@ -94,10 +94,10 @@ namespace SendMail
             badge.Anchor = AnchorStyles.Right;
             badge.Location = new Point()
             {
-                X = badge.Width + 18,
+                X = badge.Width + 15,
                 Y = attachBtn.Location.Y
             };
-            badge.Image = ImageUtils.ResizeImage(Properties.Resources.delete,new Size(13,13));
+            badge.Image = ImageUtils.ResizeImage(Properties.Resources.delete,new Size(14,14));
             badge.Cursor = Cursors.Hand;
             badge.Click += (sender, e) => { HandleAttachBtnBadgeClick(sender, e, path); };
             attachBtn.Controls.Add(badge);
