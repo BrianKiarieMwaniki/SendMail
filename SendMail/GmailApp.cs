@@ -80,6 +80,7 @@ namespace SendMail
         private Button CreateAttachmentView(string path)
         {
             Button attachBtn = new Button();
+            attachBtn.BackColor = Color.Transparent;            
             attachBtn.Image = ImageUtils.GetFileExtensionImg(path, new Size(35,35));
             attachBtn.Height = 50;
             attachBtn.Width = 50;
@@ -93,10 +94,10 @@ namespace SendMail
             badge.Anchor = AnchorStyles.Right;
             badge.Location = new Point()
             {
-                X = badge.Width + 20,
-                Y = attachBtn.Location.Y + 5
+                X = badge.Width + 18,
+                Y = attachBtn.Location.Y
             };
-            badge.Image = ImageUtils.ResizeImage(Properties.Resources.closebtn,new Size(13,13));
+            badge.Image = ImageUtils.ResizeImage(Properties.Resources.delete,new Size(13,13));
             badge.Cursor = Cursors.Hand;
             badge.Click += (sender, e) => { HandleAttachBtnBadgeClick(sender, e, path); };
             attachBtn.Controls.Add(badge);

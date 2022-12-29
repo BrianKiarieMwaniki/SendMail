@@ -73,9 +73,9 @@ namespace SendMail.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap closebtn {
+        public static System.Drawing.Bitmap delete {
             get {
-                object obj = ResourceManager.GetObject("closebtn", resourceCulture);
+                object obj = ResourceManager.GetObject("delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -106,6 +106,16 @@ namespace SendMail.Properties {
         public static System.Drawing.Bitmap pdf {
             get {
                 object obj = ResourceManager.GetObject("pdf", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap throw_in_bin {
+            get {
+                object obj = ResourceManager.GetObject("throw_in_bin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
