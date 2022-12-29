@@ -1,24 +1,17 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
+﻿using SendMail.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SendMail
 {
     public partial class GmailApp : Form
     {
-        string[] scopes = new string[] { GmailService.Scope.GmailSend };
+        List<string> attachments = new List<string>();   
         string applicationName = "GmailAPIDemoClient";
 
         public GmailApp()
@@ -28,28 +21,104 @@ namespace SendMail
 
         private void btnSendEmail_Click(object sender, EventArgs e)
         {
-            UserCredential credential;
-            //read your credentials file
-            using (FileStream stream = new FileStream(Application.StartupPath + @"/credentials.json", FileMode.Open, FileAccess.Read))
+            string[] mailList = txtTo.Text.Split(';');
+            string subject = txtSubject.Text;
+            string message = txtMessage.Text;
+            Google.Apis.Gmail.v1.Data.Message messageToSend = new Google.Apis.Gmail.v1.Data.Message();
+            var gmailHelper = new GmailHelper(mailList, subject, message);
+            try
             {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                path = Path.Combine(path, ".credentials/gmail-dotnet-quickstart.json");
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(GoogleClientSecrets.Load(stream).Secrets, scopes, "user", CancellationToken.None, new FileDataStore(path, true)).Result;
+                if (attachments.Count > 0)
+                {
+                    if (mailList != null && mailList.Count() > 0)
+                    {
+                        foreach (var to in mailList)
+                        {
+                            var msg = gmailHelper.CreateEmailWithAttachment(attachments, to);
+                            gmailHelper.SendMail(msg, applicationName);
+                        }
+                    }
+                }
+                else
+                {
+                    if (mailList != null && mailList.Count() > 0)
+                    {
+                        foreach (var to in mailList)
+                        {
+                            var msg = gmailHelper.CreateSimpleEmail(to);
+                            gmailHelper.SendMail(msg, applicationName);
+                        }
+                    }
+                }
+            }           
+            finally
+            {
+                MessageBox.Show("Your email has been successfully sent!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            string message = $"To: {txtTo.Text}\r\nSubject: {txtSubject.Text}\r\nContent-Type: text/html;charset=utf-8\r\n\r\n<h1>{txtMessage.Text}</h1>";
-            //call your gmail service
-            var service = new GmailService(new BaseClientService.Initializer() { HttpClientInitializer = credential, ApplicationName = applicationName });
-            var msg = new Google.Apis.Gmail.v1.Data.Message();
-            msg.Raw = Base64UrlEncode(message.ToString());
-            service.Users.Messages.Send(msg, "me").Execute();
-            MessageBox.Show("Your email has been successfully sent !", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private string Base64UrlEncode(string input)
+        private void btnAddAttachment_Click(object sender, EventArgs e)
         {
-            var data = Encoding.UTF8.GetBytes(input);
-            return Convert.ToBase64String(data).Replace("+", "-").Replace("/", "_").Replace("=", "");
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.CheckFileExists = true;
+            openFileDialog.CheckPathExists = true;
+            openFileDialog.Multiselect = true;
+            openFileDialog.ShowDialog();
+            string[] filePaths = openFileDialog.FileNames;
+            string paths = string.Empty;
+            if (filePaths.Count() > 0)
+            {
+                foreach (var path in filePaths)
+                {
+                    paths += $"{path}; ";
+                    attachments.Add(path);
+                    flpAttachments.Controls.Add(CreateAttachmentView(path));
+                }
+            }
+        }
+
+        private Button CreateAttachmentView(string path)
+        {
+            Button attachBtn = new Button();
+            attachBtn.Image = ImageUtils.GetFileExtensionImg(path, new Size(35,35));
+            attachBtn.Height = 50;
+            attachBtn.Width = 50;
+            attachBtn.Click += (sender, e) => { HandleAttachBtnClick(sender, e, path); };
+
+            var badge = new Label();
+            badge.Height = 15;
+            badge.Width = 15;
+            badge.BackColor = Color.Transparent;
+            badge.Anchor = AnchorStyles.Top;
+            badge.Anchor = AnchorStyles.Right;
+            badge.Location = new Point()
+            {
+                X = badge.Width + 20,
+                Y = attachBtn.Location.Y + 5
+            };
+            badge.Image = ImageUtils.ResizeImage(Properties.Resources.closebtn,new Size(13,13));
+            badge.Cursor = Cursors.Hand;
+            badge.Click += (sender, e) => { HandleAttachBtnBadgeClick(sender, e, path); };
+            attachBtn.Controls.Add(badge);
+            this.PerformLayout();
+            return attachBtn;
+        }
+
+        private void HandleAttachBtnBadgeClick(object sender, EventArgs e, string path)
+        {
+            var control = sender as Label;
+            var parentControl = control.Parent;
+            flpAttachments.Controls.Remove(parentControl);
+            flpAttachments.Refresh();
+
+            attachments.Remove(path);
+        }
+
+        private void HandleAttachBtnClick(object sender, EventArgs e, string path)
+        {
+            var process = new Process();
+            process.StartInfo = new ProcessStartInfo() { UseShellExecute = true, FileName = path };
+            process.Start();
         }
     }
 }
