@@ -1,7 +1,7 @@
 ﻿
 namespace SendMail
 {
-    partial class GmailApp
+    partial class EmailApp
     {
         /// <summary>
         /// Required designer variable.
@@ -32,22 +32,26 @@ namespace SendMail
             this.btnSendEmail = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.flpAttachments = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnAddAttachment = new System.Windows.Forms.Button();
             this.txtTo = new System.Windows.Forms.TextBox();
             this.txtSubject = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.btnAddAttachment = new System.Windows.Forms.Button();
-            this.flpAttachments = new System.Windows.Forms.FlowLayoutPanel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.radioBtnGmail = new System.Windows.Forms.RadioButton();
+            this.radioBtnMicrosoft = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnSendEmail
             // 
-            this.btnSendEmail.Location = new System.Drawing.Point(524, 403);
+            this.btnSendEmail.Location = new System.Drawing.Point(524, 460);
             this.btnSendEmail.Name = "btnSendEmail";
             this.btnSendEmail.Size = new System.Drawing.Size(75, 23);
             this.btnSendEmail.TabIndex = 13;
@@ -57,7 +61,7 @@ namespace SendMail
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(158, 403);
+            this.btnCancel.Location = new System.Drawing.Point(158, 460);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 12;
@@ -75,12 +79,40 @@ namespace SendMail
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(97, 28);
+            this.groupBox2.Location = new System.Drawing.Point(97, 85);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(609, 369);
             this.groupBox2.TabIndex = 11;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Compose";
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.flpAttachments);
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Location = new System.Drawing.Point(93, 265);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(436, 88);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Attachments";
+            // 
+            // flpAttachments
+            // 
+            this.flpAttachments.Location = new System.Drawing.Point(8, 13);
+            this.flpAttachments.Name = "flpAttachments";
+            this.flpAttachments.Size = new System.Drawing.Size(422, 70);
+            this.flpAttachments.TabIndex = 9;
+            // 
+            // btnAddAttachment
+            // 
+            this.btnAddAttachment.Image = global::SendMail.Properties.Resources.attachment;
+            this.btnAddAttachment.Location = new System.Drawing.Point(543, 278);
+            this.btnAddAttachment.Name = "btnAddAttachment";
+            this.btnAddAttachment.Size = new System.Drawing.Size(50, 46);
+            this.btnAddAttachment.TabIndex = 8;
+            this.btnAddAttachment.UseVisualStyleBackColor = true;
+            this.btnAddAttachment.Click += new System.EventHandler(this.btnAddAttachment_Click);
             // 
             // txtTo
             // 
@@ -137,47 +169,56 @@ namespace SendMail
             this.label5.TabIndex = 1;
             this.label5.Text = "Message:";
             // 
-            // btnAddAttachment
+            // groupBox3
             // 
-            this.btnAddAttachment.Image = global::SendMail.Properties.Resources.attachment;
-            this.btnAddAttachment.Location = new System.Drawing.Point(543, 278);
-            this.btnAddAttachment.Name = "btnAddAttachment";
-            this.btnAddAttachment.Size = new System.Drawing.Size(50, 46);
-            this.btnAddAttachment.TabIndex = 8;
-            this.btnAddAttachment.UseVisualStyleBackColor = true;
-            this.btnAddAttachment.Click += new System.EventHandler(this.btnAddAttachment_Click);
+            this.groupBox3.Controls.Add(this.radioBtnMicrosoft);
+            this.groupBox3.Controls.Add(this.radioBtnGmail);
+            this.groupBox3.Location = new System.Drawing.Point(97, 26);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(609, 36);
+            this.groupBox3.TabIndex = 14;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Platform";
             // 
-            // flpAttachments
+            // radioBtnGmail
             // 
-            this.flpAttachments.Location = new System.Drawing.Point(8, 13);
-            this.flpAttachments.Name = "flpAttachments";
-            this.flpAttachments.Size = new System.Drawing.Size(422, 70);
-            this.flpAttachments.TabIndex = 9;
+            this.radioBtnGmail.AutoSize = true;
+            this.radioBtnGmail.Location = new System.Drawing.Point(61, 15);
+            this.radioBtnGmail.Name = "radioBtnGmail";
+            this.radioBtnGmail.Size = new System.Drawing.Size(51, 17);
+            this.radioBtnGmail.TabIndex = 0;
+            this.radioBtnGmail.TabStop = true;
+            this.radioBtnGmail.Text = "Gmail";
+            this.radioBtnGmail.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // radioBtnMicrosoft
             // 
-            this.groupBox1.Controls.Add(this.flpAttachments);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(93, 265);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(436, 88);
-            this.groupBox1.TabIndex = 9;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Attachments";
+            this.radioBtnMicrosoft.AutoSize = true;
+            this.radioBtnMicrosoft.Location = new System.Drawing.Point(230, 15);
+            this.radioBtnMicrosoft.Name = "radioBtnMicrosoft";
+            this.radioBtnMicrosoft.Size = new System.Drawing.Size(68, 17);
+            this.radioBtnMicrosoft.TabIndex = 1;
+            this.radioBtnMicrosoft.TabStop = true;
+            this.radioBtnMicrosoft.Text = "Microsoft";
+            this.radioBtnMicrosoft.UseVisualStyleBackColor = true;
             // 
-            // GmailApp
+            // EmailApp
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 506);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnSendEmail);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.groupBox2);
-            this.Name = "GmailApp";
-            this.Text = "GmailApp";
+            this.Name = "EmailApp";
+            this.Text = "EmailApp";
+            this.Load += new System.EventHandler(this.EmailApp_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -196,5 +237,8 @@ namespace SendMail
         private System.Windows.Forms.Button btnAddAttachment;
         private System.Windows.Forms.FlowLayoutPanel flpAttachments;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RadioButton radioBtnMicrosoft;
+        private System.Windows.Forms.RadioButton radioBtnGmail;
     }
 }

@@ -16,7 +16,7 @@ namespace SendMail
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GmailApp());
+            Application.Run(new EmailApp());
         }
     }
 }

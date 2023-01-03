@@ -13,6 +13,7 @@ using System.Security;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
 using Message = Microsoft.Graph.Message;
+using SendMail.Utils;
 
 namespace SendMail
 {
@@ -44,81 +45,26 @@ namespace SendMail
 
         private async void SendEmailGraphAPI()
         {
-            var pcaoptions = new PublicClientApplicationOptions
-            {
-                ClientId = clientId,
-                TenantId = tenantId,
-                RedirectUri = "https://login.microsoftonline.com/common/oauth2/nativeclient"
-            };
-
-            var pca = PublicClientApplicationBuilder
-                .CreateWithApplicationOptions(pcaoptions)
-                .WithAuthority(AzureCloudInstance.AzurePublic, tenantId).Build();
-
-            //var ewsScope = new string[] { "https://graph.microsoft.com/.default" };
-            var scope = new string[] { "user.read" };
-
-            var securePassword = new SecureString();
-            foreach (char c in password)
-            {
-                securePassword.AppendChar(c);
-            }
-
-            AuthenticationResult authResult = null;
-            var app = App.PublicClientApp;
-            var accounts = await app.GetAccountsAsync();
-            var firstAccount = accounts.FirstOrDefault();
-            try
-            {
-               authResult = await app.AcquireTokenSilent(scope,firstAccount).ExecuteAsync();
-            }
-            catch 
-            {
-                authResult = await app.AcquireTokenInteractive(scope).ExecuteAsync();
-            }
-
-            GraphServiceClient graphServiceClient =
-                new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) =>
-                {
-                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
-                }));
-
             char[] separator = { ';' };
             string[] strList = txtTo.Text.Split(separator);
-            List<Recipient> toMailList = new List<Recipient>();
-
-            for (int i = 0; i < strList.Length; i++)
-            {
-                var toMail = new Recipient 
-                {
-                    EmailAddress = new EmailAddress
-                    {
-                        Address = strList[i]
-                    }
-                };
-
-                toMailList.Add(toMail);
-            }
-
-            var message = new Message
-            {
-                Subject = txtSubject.Text,
-                Body = new ItemBody
-                {
-                    ContentType = BodyType.Text,
-                    Content = txtMessage.Text
-                },
-                ToRecipients = toMailList
-            };
+            List<Message> messages = new List<Message>();
+            var scopes = new string[] { "Mail.ReadWrite", "Mail.Send", "email" };
 
             try
             {
-                await graphServiceClient.Me.SendMail(message, true).Request().PostAsync();
+                var graphHelper = new MsGraphAPIHelper(clientId);
+                var accessToken = await graphHelper.GetAccessToken(scopes);
+                for (int i = 0; i < strList.Length; i++)
+                {
+                    var message = graphHelper.CreateSimpleMail(strList[i], txtSubject.Text, txtMessage.Text);
+                    await graphHelper.SendEmail(accessToken, message);
+                }
             }
             finally
             {
-                MessageBox.Show("Email Sent Successfully!", "Success");
+                MessageBox.Show("Emails Sent Successfull");
             }
+
         }
     }
 

@@ -194,21 +194,22 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="GmailApp.cs">
+    <Compile Include="EmailApp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GmailApp.Designer.cs">
-      <DependentUpon>GmailApp.cs</DependentUpon>
+    <Compile Include="EmailApp.Designer.cs">
+      <DependentUpon>EmailApp.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\GmailHelper.cs" />
     <Compile Include="Utils\ImageUtils.cs" />
+    <Compile Include="Utils\MsGraphAPIHelper.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GmailApp.resx">
-      <DependentUpon>GmailApp.cs</DependentUpon>
+    <EmbeddedResource Include="EmailApp.resx">
+      <DependentUpon>EmailApp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

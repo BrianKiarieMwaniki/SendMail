@@ -1,6 +1,7 @@
 ﻿using SendMail.Utils;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -9,17 +10,47 @@ using System.Windows.Forms;
 
 namespace SendMail
 {
-    public partial class GmailApp : Form
+    public partial class EmailApp : Form
     {
-        List<string> attachments = new List<string>();   
+        List<string> attachments = new List<string>();
+        string clientId = ConfigurationManager.AppSettings["clientId"];
         string applicationName = "GmailAPIDemoClient";
+        private bool _isPlatformGmail = false;
+        private bool _isPlatformMicrosoft = false;
 
-        public GmailApp()
+        public EmailApp()
         {
             InitializeComponent();
         }
 
+        private void EmailApp_Load(object sender, EventArgs e)
+        {
+            radioBtnGmail.CheckedChanged += RadioBtnGmail_Checked;
+            radioBtnMicrosoft.CheckedChanged += RadioBtnMicrosoft_Checked;
+        }
+
+        private void RadioBtnMicrosoft_Checked(object sender, EventArgs e)
+        {
+            _isPlatformMicrosoft = true;
+            _isPlatformGmail = false;            
+        }
+
+        private void RadioBtnGmail_Checked(object sender, EventArgs e)
+        {            
+            _isPlatformGmail = true;            
+            _isPlatformMicrosoft = false;
+        }
+
         private void btnSendEmail_Click(object sender, EventArgs e)
+        {
+            if (_isPlatformGmail)
+                SendGmailEmail();
+            else if (_isPlatformMicrosoft)
+                SendMicrosoftEmail();                                    
+        }
+
+
+        private void SendGmailEmail()
         {
             string[] mailList = txtTo.Text.Split(';');
             string subject = txtSubject.Text;
@@ -50,11 +81,42 @@ namespace SendMail
                         }
                     }
                 }
-            }           
+            }
             finally
             {
                 MessageBox.Show("Your email has been successfully sent!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private async void SendMicrosoftEmail()
+        {
+            char[] separator = { ';' };
+            string[] strList = txtTo.Text.Split(separator);
+            List<Message> messages = new List<Message>();
+            var scopes = new string[] { "Mail.ReadWrite", "Mail.Send", "email" };
+
+            try
+            {
+                var graphHelper = new MsGraphAPIHelper(clientId);
+                var accessToken = await graphHelper.GetAccessToken(scopes);
+                for (int i = 0; i < strList.Length; i++)
+                {
+                    var message = graphHelper.CreateSimpleMail(strList[i], txtSubject.Text, txtMessage.Text);
+                    if(attachments.Any())
+                    {
+                         await graphHelper.SendEmail(accessToken, message, attachments);
+                    }
+                    else
+                    {
+                        await graphHelper.SendEmail(accessToken, message);
+                    }
+                }
+            }
+            finally
+            {
+                MessageBox.Show("Emails Sent Successfull");
+            }
+
         }
 
         private void btnAddAttachment_Click(object sender, EventArgs e)
@@ -121,5 +183,7 @@ namespace SendMail
             process.StartInfo = new ProcessStartInfo() { UseShellExecute = true, FileName = path };
             process.Start();
         }
+
+       
     }
 }
