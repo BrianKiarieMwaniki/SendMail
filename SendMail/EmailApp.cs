@@ -1,5 +1,4 @@
 ﻿using SendMail.Utils;
-using SendMail.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
