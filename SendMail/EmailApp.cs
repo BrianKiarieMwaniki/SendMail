@@ -1,4 +1,5 @@
 ﻿using SendMail.Utils;
+using SendMail.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,7 +18,8 @@ namespace SendMail
         string applicationName = "GmailAPIDemoClient";
         private bool _isPlatformGmail = false;
         private bool _isPlatformMicrosoft = false;
-
+        private bool _isPlatformOutlook = false;
+        
         public EmailApp()
         {
             InitializeComponent();
@@ -27,18 +29,28 @@ namespace SendMail
         {
             radioBtnGmail.CheckedChanged += RadioBtnGmail_Checked;
             radioBtnMicrosoft.CheckedChanged += RadioBtnMicrosoft_Checked;
+            radioBtnOutlook.CheckedChanged += RadioBtnOutlook_Checked;
+        }
+
+        private void RadioBtnOutlook_Checked(object sender, EventArgs e)
+        {
+            _isPlatformOutlook = true;
+            _isPlatformMicrosoft = false;
+            _isPlatformGmail = false;
         }
 
         private void RadioBtnMicrosoft_Checked(object sender, EventArgs e)
         {
             _isPlatformMicrosoft = true;
             _isPlatformGmail = false;            
+            _isPlatformOutlook = false;
         }
 
         private void RadioBtnGmail_Checked(object sender, EventArgs e)
         {            
             _isPlatformGmail = true;            
             _isPlatformMicrosoft = false;
+            _isPlatformOutlook = false;
         }
 
         private void btnSendEmail_Click(object sender, EventArgs e)
@@ -46,7 +58,11 @@ namespace SendMail
             if (_isPlatformGmail)
                 SendGmailEmail();
             else if (_isPlatformMicrosoft)
-                SendMicrosoftEmail();                                    
+                SendMicrosoftEmail();
+            else if (_isPlatformOutlook)
+                SendOutlookEmail();
+            else
+                MessageBox.Show("You must select a platform to use to send your emails!🙁");
         }
 
 
@@ -117,6 +133,30 @@ namespace SendMail
                 MessageBox.Show("Emails Sent Successfull");
             }
 
+        }
+
+        private void SendOutlookEmail()
+        {
+            var isSentSuccessfully = false;
+            string[] recepients = txtTo.Text?.Split(';');
+            try
+            {
+                var outlookHelper = new OutlookEmailHelper();
+                if(recepients.Count() > 0)
+                {
+                    foreach (var to in recepients)
+                    {
+                        isSentSuccessfully = outlookHelper.SendMailWithOutlook(txtTo.Text, txtSubject.Text, txtMessage.Text, attachments);
+                    }
+                }
+            }
+            catch 
+            {
+            }
+            finally
+            {
+                if (isSentSuccessfully) MessageBox.Show("Outlook Email Sent Successfully!👍");
+            }
         }
 
         private void btnAddAttachment_Click(object sender, EventArgs e)

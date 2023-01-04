@@ -42,8 +42,9 @@ namespace SendMail
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.radioBtnGmail = new System.Windows.Forms.RadioButton();
             this.radioBtnMicrosoft = new System.Windows.Forms.RadioButton();
+            this.radioBtnGmail = new System.Windows.Forms.RadioButton();
+            this.radioBtnOutlook = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -171,6 +172,7 @@ namespace SendMail
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.radioBtnOutlook);
             this.groupBox3.Controls.Add(this.radioBtnMicrosoft);
             this.groupBox3.Controls.Add(this.radioBtnGmail);
             this.groupBox3.Location = new System.Drawing.Point(97, 26);
@@ -179,6 +181,17 @@ namespace SendMail
             this.groupBox3.TabIndex = 14;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Platform";
+            // 
+            // radioBtnMicrosoft
+            // 
+            this.radioBtnMicrosoft.AutoSize = true;
+            this.radioBtnMicrosoft.Location = new System.Drawing.Point(230, 15);
+            this.radioBtnMicrosoft.Name = "radioBtnMicrosoft";
+            this.radioBtnMicrosoft.Size = new System.Drawing.Size(68, 17);
+            this.radioBtnMicrosoft.TabIndex = 1;
+            this.radioBtnMicrosoft.TabStop = true;
+            this.radioBtnMicrosoft.Text = "Microsoft";
+            this.radioBtnMicrosoft.UseVisualStyleBackColor = true;
             // 
             // radioBtnGmail
             // 
@@ -191,16 +204,16 @@ namespace SendMail
             this.radioBtnGmail.Text = "Gmail";
             this.radioBtnGmail.UseVisualStyleBackColor = true;
             // 
-            // radioBtnMicrosoft
+            // radioBtnOutlook
             // 
-            this.radioBtnMicrosoft.AutoSize = true;
-            this.radioBtnMicrosoft.Location = new System.Drawing.Point(230, 15);
-            this.radioBtnMicrosoft.Name = "radioBtnMicrosoft";
-            this.radioBtnMicrosoft.Size = new System.Drawing.Size(68, 17);
-            this.radioBtnMicrosoft.TabIndex = 1;
-            this.radioBtnMicrosoft.TabStop = true;
-            this.radioBtnMicrosoft.Text = "Microsoft";
-            this.radioBtnMicrosoft.UseVisualStyleBackColor = true;
+            this.radioBtnOutlook.AutoSize = true;
+            this.radioBtnOutlook.Location = new System.Drawing.Point(436, 15);
+            this.radioBtnOutlook.Name = "radioBtnOutlook";
+            this.radioBtnOutlook.Size = new System.Drawing.Size(62, 17);
+            this.radioBtnOutlook.TabIndex = 2;
+            this.radioBtnOutlook.TabStop = true;
+            this.radioBtnOutlook.Text = "Outlook";
+            this.radioBtnOutlook.UseVisualStyleBackColor = true;
             // 
             // EmailApp
             // 
@@ -240,5 +253,6 @@ namespace SendMail
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton radioBtnMicrosoft;
         private System.Windows.Forms.RadioButton radioBtnGmail;
+        private System.Windows.Forms.RadioButton radioBtnOutlook;
     }
 }
