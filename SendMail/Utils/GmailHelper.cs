@@ -94,23 +94,31 @@ namespace SendMail.Utils
             return Convert.ToBase64String(data).Replace("+", "-").Replace("/", "_").Replace("=", "");
         }
 
-        private UserCredential GetGmailCredential()
+        private async Task<UserCredential> GetGmailCredential()
         {
             string[] scopes = new string[] { GmailService.Scope.GmailSend };
             UserCredential credential;
             //read your credentials file
-            using (FileStream stream = new FileStream(System.Windows.Forms.Application.StartupPath + @"/credentials.json", FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream(System.Windows.Forms.Application.StartupPath + "\\credential3.json", FileMode.Open, FileAccess.Read))
             {
-                string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                path = Path.Combine(path, ".credentials/gmail-dotnet-quickstart.json");
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(GoogleClientSecrets.FromStream(stream).Secrets, scopes, "user", CancellationToken.None, new FileDataStore(path, true)).Result;
+                //string path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                //path = Path.Combine(path, ".credentials\\token.json");
+                string credPath = "token.json";
+
+                //credential = GoogleWebAuthorizationBroker.AuthorizeAsync(GoogleClientSecrets.FromStream(stream).Secrets,
+                //                                                scopes, "user", CancellationToken.None,
+                //                                                new FileDataStore(credPath, true)).Result;
+
+                credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(GoogleClientSecrets.FromStream(stream).Secrets,
+                                                                scopes, "user", CancellationToken.None);
+
                 return credential;
             }
         }
 
-        public void SendMail(Message message, string applicationName)
+        public async Task SendMail(Message message, string applicationName)
         {
-            var credential = GetGmailCredential();
+            var credential = await GetGmailCredential();
             var service = new GmailService(new BaseClientService.Initializer() { HttpClientInitializer = credential, ApplicationName = applicationName });
             service.Users.Messages.Send(message, "me").Execute();            
         }

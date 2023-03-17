@@ -15,9 +15,11 @@ namespace SendMail
         List<string> attachments = new List<string>();
         string clientId = ConfigurationManager.AppSettings["clientId"];
         string applicationName = "GmailAPIDemoClient";
+        //string applicationName = "FinCreditEmailSetup";
         private bool _isPlatformGmail = false;
         private bool _isPlatformMicrosoft = false;
         private bool _isPlatformOutlook = false;
+        private bool _isGmailSmtp => radioButtonGmailSMTP.Checked;
         
         public EmailApp()
         {
@@ -60,12 +62,45 @@ namespace SendMail
                 SendMicrosoftEmail();
             else if (_isPlatformOutlook)
                 SendOutlookEmail();
+            else if(_isGmailSmtp)
+            {
+                SendGmailSmtpEmail();
+            }
             else
                 MessageBox.Show("You must select a platform to use to send your emails!🙁");
         }
 
+        private void SendGmailSmtpEmail()
+        {
+            string[] mailList = txtTo.Text.Split(';');
+            string subject = txtSubject.Text;
+            string message = txtMessage.Text;
 
-        private void SendGmailEmail()
+            using (var form = new Credentials())
+            {
+                var result = form.ShowDialog();
+
+                if(result == DialogResult.OK)
+                {
+                    var username = form.Username;
+                    var password = form.Password;
+
+                    if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) return;
+
+                    var smtpClient = new GmailSmtpHelper(username, password);
+
+                    if (mailList != null && mailList.Count() > 0)
+                    {
+                        foreach (var to in mailList)
+                        {
+                            smtpClient.SendMail(to, subject, message);
+                        }
+                    }
+;                }
+            }
+        }
+
+        private async void SendGmailEmail()
         {
             string[] mailList = txtTo.Text.Split(';');
             string subject = txtSubject.Text;
@@ -81,7 +116,7 @@ namespace SendMail
                         foreach (var to in mailList)
                         {
                             var msg = gmailHelper.CreateEmailWithAttachment(attachments, to);
-                            gmailHelper.SendMail(msg, applicationName);
+                            await gmailHelper.SendMail(msg, applicationName);
                         }
                     }
                 }
@@ -92,15 +127,17 @@ namespace SendMail
                         foreach (var to in mailList)
                         {
                             var msg = gmailHelper.CreateSimpleEmail(to);
-                            gmailHelper.SendMail(msg, applicationName);
+                           await gmailHelper.SendMail(msg, applicationName);
                         }
                     }
                 }
-            }
-            finally
-            {
                 MessageBox.Show("Your email has been successfully sent!", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error",MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
 
         private async void SendMicrosoftEmail()
@@ -223,6 +260,6 @@ namespace SendMail
             process.Start();
         }
 
-       
+      
     }
 }
